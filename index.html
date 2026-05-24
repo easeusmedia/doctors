@@ -1267,7 +1267,7 @@ footer{background:#111c28;padding:26px 40px;border-top:1px solid rgba(61,139,138
       <p class="nl-desc">One actionable growth tip for aesthetic doctors. Delivered every Friday. No fluff. No spam. Just the insight that moves the needle.</p>
       <div class="nl-form">
         <div class="nl-row">
-          <input type="text" class="nl-input" id="nl-name" placeholder="First name">
+          <input type="text" class="nl-input" id="nl-name" placeholder=" ">
           <input type="email" class="nl-input" id="nl-email" placeholder="Email address">
         </div>
         <button class="nl-submit" onclick="submitNL()">Subscribe — It's Free</button>
@@ -1350,13 +1350,14 @@ function acceptCookies(){cb.classList.remove('on');localStorage.setItem('easeus_
    1st: Platform Insight section
    2nd: Final CTA section (only if dismissed first one)
    After subscribing or dismissing twice → never again */
+/* Newsletter popup — resets every refresh unless subscribed */
 const nlOverlay=document.getElementById('nl-overlay');
-let nlDismissCount=parseInt(localStorage.getItem('easeus_nl_dismiss_count')||'0');
-let nlSubscribed=localStorage.getItem('easeus_nl_subscribed')==='1';
+let nlDismissCount=0;
 let nlCurrentlyOpen=false;
+const nlAlreadySubscribed=localStorage.getItem('easeus_nl_subscribed')==='1';
 
 function showNL(){
-  if(nlCurrentlyOpen||nlSubscribed||nlDismissCount>=2)return;
+  if(nlCurrentlyOpen||nlAlreadySubscribed||nlDismissCount>=2)return;
   nlCurrentlyOpen=true;
   nlOverlay.classList.add('on');
 }
@@ -1364,26 +1365,28 @@ function closeNL(){
   nlOverlay.classList.remove('on');
   nlCurrentlyOpen=false;
   nlDismissCount++;
-  localStorage.setItem('easeus_nl_dismiss_count',nlDismissCount.toString());
 }
 
 /* First trigger: Platform Insight */
 const platSec=document.getElementById('platform-sec');
-if(platSec&&nlDismissCount===0&&!nlSubscribed){
+if(platSec&&!nlAlreadySubscribed){
   new IntersectionObserver(function(entries,obs){
-    if(entries[0].isIntersecting){showNL();obs.disconnect();}
+    if(entries[0].isIntersecting&&nlDismissCount===0){showNL();obs.disconnect();}
   },{threshold:0.3}).observe(platSec);
 }
 
-/* Second trigger: Final CTA (fires if dismissed once) */
+/* Second trigger: Final CTA */
 const fctaSec=document.getElementById('fcta-sec');
-if(fctaSec&&!nlSubscribed){
+if(fctaSec&&!nlAlreadySubscribed){
   new IntersectionObserver(function(entries,obs){
     if(entries[0].isIntersecting&&nlDismissCount===1){showNL();obs.disconnect();}
   },{threshold:0.3}).observe(fctaSec);
 }
 
+
 /* Google Sheets — DISABLED TEMPORARILY. Emails stored in localStorage until connected. */
+const SHEETS_URL='https://script.google.com/macros/s/AKfycbzO6CtG0ZhbapI-Y2QrknLI6UQKB38ixmoqYCvczZqAC6C9aqpjVN3SHgLJEf5Y8B93/exec';
+
 function submitNL(){
   const name=document.getElementById('nl-name').value.trim();
   const email=document.getElementById('nl-email').value.trim();
@@ -1394,7 +1397,8 @@ function submitNL(){
   saved.push({name:name,email:email,source:'exit_popup',date:new Date().toISOString()});
   localStorage.setItem('easeus_leads',JSON.stringify(saved));
   localStorage.setItem('easeus_nl_subscribed','1');
-  nlSubscribed=true;
+  nlDismissCount=2;
+  fetch(SHEETS_URL+'?name='+encodeURIComponent(name)+'&email='+encodeURIComponent(email)+'&source=exit_popup',{mode:'no-cors'});
 }
 function submitFooterNL(){
   const name=document.getElementById('ft-nl-name').value.trim();
@@ -1405,6 +1409,7 @@ function submitFooterNL(){
   const saved=JSON.parse(localStorage.getItem('easeus_leads')||'[]');
   saved.push({name:name,email:email,source:'footer',date:new Date().toISOString()});
   localStorage.setItem('easeus_leads',JSON.stringify(saved));
+  fetch(SHEETS_URL+'?name='+encodeURIComponent(name)+'&email='+encodeURIComponent(email)+'&source=footer',{mode:'no-cors'});
 }
 </script>
 
