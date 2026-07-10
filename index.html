@@ -598,6 +598,44 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-off
 .strip-tile{position:relative;}
 @media(max-width:640px){.strip-tile{width:116px;border-radius:12px;}.reel-strip-track{gap:12px;}.reel-strip-wrap{margin-top:-84px;margin-bottom:-84px;}}
 @media(prefers-reduced-motion:reduce){.reel-strip-track{animation:none;}}
+
+/* ── See the System in Action ── */
+.portfolio{background:radial-gradient(820px 420px at 12% -6%, rgba(0,170,255,.14), transparent 55%),linear-gradient(160deg,#15426F 0%,#0A2540 55%,#081E36 100%);}
+.port-hdr{text-align:center;}
+.port-sub{margin-top:14px;font-size:.92rem;color:var(--body-d);}
+.vstack{position:relative;max-width:840px;margin:48px auto 0;}
+.vstack-item{position:sticky;}
+.vstack-item:nth-child(1){top:96px;z-index:1;}
+.vstack-item:nth-child(2){top:112px;z-index:2;margin-top:16vh;}
+.vs-card{position:relative;border-radius:16px;overflow:hidden;cursor:pointer;border:1px solid rgba(0,170,255,.22);box-shadow:0 26px 60px -28px rgba(0,0,0,.8),inset 0 1px 0 rgba(255,255,255,.05);background:linear-gradient(150deg,#10325C,#081E38);transition:transform .5s cubic-bezier(.22,1,.36,1),filter .5s,border-color .3s;}
+.vstack-item.covered .vs-card{transform:scale(.96) translateY(-8px);filter:brightness(.62) saturate(.85);}
+.vs-card img{width:100%;aspect-ratio:16/9;object-fit:cover;transition:transform .5s;}
+.vs-card:hover img{transform:scale(1.03);}
+.vs-play{position:absolute;top:0;left:0;right:0;aspect-ratio:16/9;display:flex;align-items:center;justify-content:center;background:rgba(7,24,44,.28);transition:background .3s;}
+.vs-card:hover .vs-play{background:rgba(7,24,44,.12);}
+.vs-play svg{width:56px;height:56px;fill:#fff;background:linear-gradient(135deg,var(--blue),var(--blue-hi));border-radius:50%;padding:19px;box-shadow:0 0 0 7px rgba(0,170,255,.10),0 14px 36px -10px rgba(0,115,230,.7);transition:transform .3s;}
+.vs-card:hover .vs-play svg{transform:scale(1.08);}
+.vs-meta{padding:15px 20px;border-top:1px solid var(--line-d);}
+.vs-kind{font-size:.62rem;letter-spacing:.16em;text-transform:uppercase;font-weight:600;color:var(--accent);}
+.vs-title{font-family:var(--df);font-weight:500;font-size:1rem;color:var(--off);margin-top:6px;line-height:1.35;}
+.ss-reels{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;max-width:840px;margin:40px auto 0;}
+.ss-reel{position:relative;border-radius:var(--r);overflow:hidden;cursor:pointer;aspect-ratio:9/15;border:1px solid rgba(0,170,255,.22);box-shadow:0 20px 46px -24px rgba(0,0,0,.7);transition:transform .3s,border-color .3s;}
+.ss-reel:hover{transform:translateY(-4px);border-color:rgba(0,170,255,.5);}
+.ss-reel img{width:100%;height:100%;object-fit:cover;transition:transform .45s;}
+.ss-reel:hover img{transform:scale(1.05);}
+.ss-reel-play{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(7,24,44,.26);}
+.ss-reel-play svg{width:36px;height:36px;fill:#fff;background:linear-gradient(135deg,var(--blue),var(--blue-hi));border-radius:50%;padding:11px;}
+@media(max-width:640px){.ss-reels{grid-template-columns:repeat(2,1fr);}.vstack-item:nth-child(1){top:74px;}.vstack-item:nth-child(2){top:86px;margin-top:13vh;}.vs-title{font-size:.88rem;}.port-sub{font-size:.82rem;}}
+@media(prefers-reduced-motion:reduce){.vstack-item.covered .vs-card{transform:none;filter:none;}}
+
+/* ── Video lightbox ── */
+.vl-overlay{position:fixed;inset:0;z-index:1200;background:rgba(7,24,44,.92);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .35s;}
+.vl-overlay.on{opacity:1;pointer-events:auto;}
+.vl-wrap{position:relative;}
+.vl-horizontal{width:min(920px,92vw);aspect-ratio:16/9;}
+.vl-vertical{height:min(82vh,720px);aspect-ratio:9/16;}
+.vl-wrap iframe{width:100%;height:100%;border:none;border-radius:14px;box-shadow:0 30px 80px -20px rgba(0,0,0,.8);}
+.vl-close{position:absolute;top:-44px;right:0;background:none;border:none;color:var(--off);font-size:1.9rem;cursor:pointer;line-height:1;}
 </style>
 </head>
 <body>
@@ -704,6 +742,51 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-off
       <span class="tb-label">Trusted by aesthetic doctors across the UK</span>
       <div class="dm-viewport">
         <div class="dm-track"><div class="dm-card"><div class="dm-img"><img src="data:image/jpeg;base64,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" alt="Dr. Yusra Al Mukhtar"></div><div class="dm-txt"><div class="dm-name">Dr. Yusra Al Mukhtar</div><div class="dm-spec">Multi Award-Winning · UK</div></div></div><div class="dm-card"><div class="dm-img"><img src="data:image/jpeg;base64,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" alt="Dr. Tego Kirnon-Jackman"></div><div class="dm-txt"><div class="dm-name">Dr. Tego Kirnon-Jackman</div><div class="dm-spec">Award-Winning Aesthetic Doctor · Pall Mall</div></div></div><div class="dm-card"><div class="dm-img"><img src="data:image/jpeg;base64,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" alt="Dr. Jordan Faulkner"></div><div class="dm-txt"><div class="dm-name">Dr. Jordan Faulkner</div><div class="dm-spec">Cosmetic Doctor · Founder, Unite Aesthetics</div></div></div><div class="dm-card"><div class="dm-img"><img src="data:image/jpeg;base64,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" alt="Jasmine Avery"></div><div class="dm-txt"><div class="dm-name">Jasmine Avery</div><div class="dm-spec">Anti-Ageing Aesthetician · Marylebone</div></div></div><div class="dm-card"><div class="dm-img"><img src="data:image/jpeg;base64,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" alt="Dr. Yusra Al Mukhtar"></div><div class="dm-txt"><div class="dm-name">Dr. Yusra Al Mukhtar</div><div class="dm-spec">Multi Award-Winning · UK</div></div></div><div class="dm-card"><div class="dm-img"><img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDL/2wBDAQkJCQwLDBgNDRgyIRwhMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjL/wAARCABQAFADASIAAhEBAxEB/8QAHAAAAQQDAQAAAAAAAAAAAAAABwQFBggBAgMA/8QAOBAAAgEEAAMHAAYJBQAAAAAAAQIDAAQFEQYSIQcTMUFRYXEUIjKRocEVM0JSYnKBgrEjNFPR4f/EABkBAAMBAQEAAAAAAAAAAAAAAAECBAMFAP/EACARAAICAgMBAQEBAAAAAAAAAAABAhEDMQQSIUEiUWH/2gAMAwEAAhEDEQA/ADEorsgrRRXZBWRoekeOGJ5ZXWONAWZ3Ogo9ST4VCMv2scMY2Xubed7+Xej3A0i+5Y/luoF2qcay5PJTYWykYWFs/I3Iek0g+0T6gHoB7E0PTjueEOsgeTz6+dOotgtLYc37VYki+k/oh57Pf623uAxX5BUa++pFw7xnhOJ9pY3BS5HVracBJPkDemHxuq3WuSu8YTHIitCftRuNg07WUN3e3dvNi8ddAFgWZQQqj1D+XzSy/KtjRXZ0izWqxqorwHxDJmcfdWN7KZMjjZTDKzDTSJ+w59yBo+496lvLQTtWgNU6Zz1Wa21XtedNQDRRSLiDJfobhzIZEfbggZk/m8F/Eily1CO1rIC04OW2B+td3KR69QPrH/ApVsLK+Zq4MRVS315T1Y+IA6k/JNJMVDkcvkIrWxRncnYUHooHmT5CnGHFpxBmBC4k+yAoQgefWijwRjLDFW5tI4wshJDt+02j5mlzZ+ni2a4cDyevQowXDmOwePW5yVl9Ouz4TMgZU/lQ/wCT1+Kerq7gSzNwH5Y9bHT8qTXGCyYyHMuQmlhYaWNm5e7JI66A69N9PPde4kx9wmPt5LNU5gWUK5OmbXTdS5X3a7MrxLonSGng297jtcCpzLHkMewZWGtsnUHX9tGaq42uRuMb2y4Brl9hRHGSV5drJzKd/wBWNWOqvGqiiHI7kzGqxqtqwaczOa0Fe2rMK2cx2NDbFvEZXA/efw/AUah0G6qx2nZYX/aJlnVtpE6wD+waP47oR2MyP4vKrj87a3UySSRIx50jYBmH9elFjhe6a8tIr3QDsOZgDv3oMW0iLfc0g2AD0om8FNcxYG0uYVLoV5ZE8+hI2Kw5ULin9KeHNqTXwKi5UXzpGjLHKia5j568KZ7/ACN9BAtrM1vMqtzNIq8uh49Bs7+d1rYra5CE9IWkB+r3g6qfyqOcU3MWKsp7m4t4FEfVe6kIDNvouvmp1FS3ssbUbfwhvE2Uju+0iylhP+1MKMR+8H5j926tUTsk+pqlmIEt7nIppDzSSXKsx9SW2augnRAPQCr1HqkjlSl2bkbVg16vGiChBkr1Mdi7q9kICwQvKd/wgn8qpde3b3d3NcyHckshkY+5OzVuOMLKTN8P3eGgufo7XShJJeXZVdgkAeZOtUMcf2cWGHlHdPHLcIf1ssQd9+oB2o+6hEZxbBHY4DJ3jRSrbSJFJsLI66B14kDxPjRs4Zxq4rFQWpHSP6hJHnS+DCJFN38zPLL/AMkh2w9PYD4rtFa3yySQoYu7ZuYMRsmsOT22tFPHST/0YM5BNHOZrSRomHRip8fmhNxJkcjfX8lvczu8MLbRfAeHj7mjhLYScsqXGmDk7PNrp926gPEvC6mC8uYSZJoijnX7uiP+vurHjZE50zXkwl08INii0D97GdOjK6/5q3vD+at8/g7TI2zArNGGZQeqt5g/B3VQ7FJFmcIBzL5eRFTvgfjKThvJDnLC1kPLNGP2f4tV0Je6OfH+Msoax5Uix2Riv4FkRlYMoZWU9GHqKWVmM1RE3vRLctHKdSA+O9cwrhPbN3vPGOhHUe9Nd+pC96jkrvo2+qn0+KX4m+N1CqyN/qxnTUarRqcmBrHlo+Ht5U6y2gl2yjR89DYpNNYXES8zRMFB1vVHZ4ant2kbTPv06eNI4sfySTMwB5mHQ+YA/wDTTsVYDqCPSlFlAJ5S7jYUD76mhx1DJ3WjaWZyh1YH+KeFZuH71bqGPVtKSykeGj4r8jxHtUauTDIwkUgNry86sjeWVrkLN7W5jWSJhoqaAvGXDEnD+X7uNy1tJtoWI8vQ+4qleks1XpNeyjiaYPJi5XLCMBoNnehvqv40a45FljDqeh/Cqt8C3jWPFloWJCvtCR7irFWmTgtokknnjiRtAmRwo/GlkqYV+on/2Q==" alt="Dr. Tego Kirnon-Jackman"></div><div class="dm-txt"><div class="dm-name">Dr. Tego Kirnon-Jackman</div><div class="dm-spec">Award-Winning Aesthetic Doctor · Pall Mall</div></div></div><div class="dm-card"><div class="dm-img"><img src="data:image/jpeg;base64,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" alt="Dr. Jordan Faulkner"></div><div class="dm-txt"><div class="dm-name">Dr. Jordan Faulkner</div><div class="dm-spec">Cosmetic Doctor · Founder, Unite Aesthetics</div></div></div><div class="dm-card"><div class="dm-img"><img src="data:image/jpeg;base64,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" alt="Jasmine Avery"></div><div class="dm-txt"><div class="dm-name">Jasmine Avery</div><div class="dm-spec">Anti-Ageing Aesthetician · Marylebone</div></div></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ 04 SEE THE SYSTEM IN ACTION ══ -->
+<section class="sec portfolio">
+  <div class="siw">
+    <div class="port-hdr rev">
+      <div class="tag">Our Work</div>
+      <h2 class="h2 h2-w" style="margin-top:14px;">See the System <em>in Action</em></h2>
+      <p class="port-sub">Real content. Real results. Built by The Authority Engine.</p>
+    </div>
+    <div class="vstack" id="home-stack">
+      <div class="vstack-item">
+        <div class="vs-card" onclick="openVideo('SzZcQsHllMY','horizontal')">
+          <img src="https://img.youtube.com/vi/SzZcQsHllMY/maxresdefault.jpg" alt="Truth About Russian Lips, Buccal Fat and Lemon Bottle" loading="lazy">
+          <div class="vs-play"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div>
+          <div class="vs-meta"><div class="vs-kind">Long-Form</div><div class="vs-title">Truth About Russian Lips, Buccal Fat &amp; Lemon Bottle</div></div>
+        </div>
+      </div>
+      <div class="vstack-item">
+        <div class="vs-card" onclick="openVideo('PsauVQJqXfw','horizontal')">
+          <img src="https://img.youtube.com/vi/PsauVQJqXfw/maxresdefault.jpg" alt="Best Cleansers for a Summer Glow-Up" loading="lazy">
+          <div class="vs-play"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div>
+          <div class="vs-meta"><div class="vs-kind">Long-Form</div><div class="vs-title">Best Cleansers for a Summer Glow-Up</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="ss-reels rev">
+      <div class="ss-reel" onclick="openVideo('_N5VoOreQJw','vertical')">
+        <img src="https://img.youtube.com/vi/_N5VoOreQJw/maxresdefault.jpg" onerror="this.onerror=null;this.src='https://img.youtube.com/vi/_N5VoOreQJw/hqdefault.jpg'" alt="Short-form clip" loading="lazy">
+        <div class="ss-reel-play"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div>
+      </div>
+      <div class="ss-reel" onclick="openVideo('xEvKiLtbujA','vertical')">
+        <img src="https://img.youtube.com/vi/xEvKiLtbujA/maxresdefault.jpg" onerror="this.onerror=null;this.src='https://img.youtube.com/vi/xEvKiLtbujA/hqdefault.jpg'" alt="Short-form clip" loading="lazy">
+        <div class="ss-reel-play"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div>
+      </div>
+      <div class="ss-reel" onclick="openVideo('b3E9f7Fo4wE','vertical')">
+        <img src="https://img.youtube.com/vi/b3E9f7Fo4wE/maxresdefault.jpg" onerror="this.onerror=null;this.src='https://img.youtube.com/vi/b3E9f7Fo4wE/hqdefault.jpg'" alt="Short-form clip" loading="lazy">
+        <div class="ss-reel-play"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div>
+      </div>
+      <div class="ss-reel" onclick="openVideo('EcO4oK9V9Uw','vertical')">
+        <img src="https://img.youtube.com/vi/EcO4oK9V9Uw/maxresdefault.jpg" onerror="this.onerror=null;this.src='https://img.youtube.com/vi/EcO4oK9V9Uw/hqdefault.jpg'" alt="Short-form clip" loading="lazy">
+        <div class="ss-reel-play"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div>
       </div>
     </div>
   </div>
@@ -1059,6 +1142,48 @@ function submitFooterNL(){
     var k=s.getAttribute('data-reel');
     if(R[k]){ s.src='data:video/mp4;base64,'+R[k]; s.parentNode.load(); s.parentNode.play().catch(function(){}); }
   });
+})();
+</script>
+<div class="vl-overlay" id="vl-overlay">
+  <div class="vl-wrap vl-horizontal" id="vl-wrap">
+    <button class="vl-close" onclick="closeVideo()">×</button>
+    <iframe id="vl-iframe" src="" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+  </div>
+</div>
+<script>
+var vlOverlay=document.getElementById('vl-overlay');
+var vlWrap=document.getElementById('vl-wrap');
+var vlIframe=document.getElementById('vl-iframe');
+function openVideo(id,orient){
+  vlWrap.className='vl-wrap '+(orient==='vertical'?'vl-vertical':'vl-horizontal');
+  vlIframe.src='https://www.youtube.com/embed/'+id+'?autoplay=1&rel=0';
+  vlOverlay.classList.add('on');
+  document.body.style.overflow='hidden';
+}
+function closeVideo(){
+  vlOverlay.classList.remove('on');
+  vlIframe.src='';
+  document.body.style.overflow='';
+}
+vlOverlay.addEventListener('click',function(e){if(e.target===vlOverlay)closeVideo();});
+/* Deposit effect for the 2-video stack */
+(function(){
+  var stack=document.getElementById('home-stack');
+  if(!stack)return;
+  var items=Array.prototype.slice.call(stack.children);
+  if(items.length<2)return;
+  if(window.matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+  var ticking=false;
+  function upd(){
+    ticking=false;
+    var vh=window.innerHeight;
+    for(var i=0;i<items.length-1;i++){
+      var nextTop=items[i+1].getBoundingClientRect().top;
+      items[i].classList.toggle('covered',nextTop<vh*0.55);
+    }
+  }
+  window.addEventListener('scroll',function(){if(!ticking){ticking=true;requestAnimationFrame(upd);}},{passive:true});
+  upd();
 })();
 </script>
 </body>
