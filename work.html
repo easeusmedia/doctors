@@ -666,6 +666,51 @@ footer{position:relative;background:#050F1D;color:#fff;padding:80px 0 0;overflow
 @keyframes dash-x{to{background-position:10px 0;}}
 @media(max-width:820px){.page::before,.page::after{display:none;}}
 @media(prefers-reduced-motion:reduce){.page::before,.page::after,.hr{animation:none;}}
+
+/* ---------- silky scroll (Lenis) ---------- */
+html.lenis,html.lenis body{height:auto;}
+.lenis.lenis-smooth{scroll-behavior:auto!important;}
+.lenis.lenis-stopped{overflow:hidden;}
+[data-lenis-prevent]{overscroll-behavior:contain;}
+
+/* ---------- custom cursor (mouse/trackpad only) ---------- */
+.cur-dot,.cur-ring{position:fixed;top:0;left:0;z-index:200;pointer-events:none;opacity:0;transition:opacity .3s;will-change:transform;}
+.cur-on .cur-dot,.cur-on .cur-ring{opacity:1;}
+.cur-dot{width:6px;height:6px;margin:-3px 0 0 -3px;border-radius:50%;background:var(--accent);}
+.cur-ring{width:38px;height:38px;margin:-19px 0 0 -19px;}
+.cur-ring i{position:absolute;inset:0;border:1.5px solid rgba(0,170,255,.55);border-radius:50px;background:rgba(0,170,255,0);display:flex;align-items:center;justify-content:center;transition:transform .35s cubic-bezier(.2,.7,.2,1),border-radius .35s,background .3s,border-color .3s,inset .35s;}
+.cur-ring i::after{content:'';width:7px;height:7px;border-right:1.6px solid #fff;border-bottom:1.6px solid #fff;transform:translateY(-2px) rotate(45deg);opacity:0;transition:opacity .2s,transform .3s;}
+.cur-ring b{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font:600 .62rem/1 var(--mf);letter-spacing:.08em;text-transform:uppercase;color:#fff;opacity:0;transition:opacity .2s;}
+/* hovering something clickable */
+.cur-link .cur-ring i{transform:scale(1.5);background:rgba(0,170,255,.12);border-color:rgba(0,170,255,.8);}
+.cur-link .cur-dot{opacity:0;}
+/* hovering a video: becomes a play bubble */
+.cur-play .cur-ring i{transform:scale(2.1);background:var(--blue);border-color:var(--blue);}
+.cur-play .cur-ring b{opacity:1;}
+.cur-play .cur-dot{opacity:0;}
+/* while scrolling: a capsule with an arrow pointing the way you scroll */
+.cur-scroll .cur-ring i{inset:-6px 6px;border-radius:20px;background:rgba(10,37,64,.75);border-color:rgba(0,170,255,.8);transform:none;}
+.cur-scroll .cur-ring i::after{opacity:1;}
+.cur-scroll.cur-up .cur-ring i::after{transform:translateY(2px) rotate(225deg);}
+.cur-scroll .cur-dot{opacity:0;}
+@media(hover:hover) and (pointer:fine){
+  html.cur-ready,html.cur-ready a,html.cur-ready button{cursor:none;}
+}
+
+/* ---------- overlays always follow the card's rounded corners ---------- */
+.spot,.g,.case-l,.tcard,.ba-col,.bcard,.block,.cell,.vc,.pc,.vid,.panel,.fi,.dm-card{isolation:isolate;}
+.spot,.g,.case-l{overflow:hidden;}
+.spot-l,.bcard::after,.ba-us::after,.block::after{border-radius:inherit;}
+
+/* no backdrop blur inside cards that move on hover: Chrome paints it square there */
+.glass{backdrop-filter:none;-webkit-backdrop-filter:none;background:linear-gradient(160deg,rgba(255,255,255,.09),rgba(255,255,255,.04));}
+.pr-tag{backdrop-filter:none;-webkit-backdrop-filter:none;background:rgba(255,255,255,.08);}
+.vc-v{backdrop-filter:none;-webkit-backdrop-filter:none;background:#fff;}
+.reel-play svg{backdrop-filter:none;-webkit-backdrop-filter:none;background:rgba(7,24,44,.55);}
+.fbadge{backdrop-filter:none;-webkit-backdrop-filter:none;}
+/* the Play cursor replaces the tile's own play button on mouse devices */
+.reel-play svg{transition:transform .3s,background .3s,opacity .3s;}
+.cur-ready .pc:hover .reel-play svg,.cur-ready .vid:hover .reel-play svg{opacity:0;transform:scale(.6);}
 </style>
 </head>
 <body>
@@ -840,6 +885,38 @@ try{if((Intl.DateTimeFormat().resolvedOptions().timeZone||'').indexOf('America/'
   if(!('IntersectionObserver' in window)||matchMedia('(prefers-reduced-motion: reduce)').matches)return;
   var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});},{rootMargin:'0px 0px -8% 0px'});
   document.querySelectorAll('.sec .head,.sec .h2,.ba,.steps .h3,.bcard,.mq,.watch,.case,.cells,.bx,.g,.split .letter,.panel,.fit,.faq-h,.fi,.book,.band,.dgrid,.tcard').forEach(function(el){el.classList.add('rv');io.observe(el);});
+})();
+</script>
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js"></script>
+<script>
+(function(){
+  var calm=matchMedia('(prefers-reduced-motion: reduce)').matches, root=document.documentElement;
+  // silky scroll
+  if(!calm&&window.Lenis){
+    root.style.scrollBehavior='auto';
+    var lenis=new Lenis({lerp:.085,anchors:{offset:-84}});
+    (function raf(t){lenis.raf(t);requestAnimationFrame(raf);})(performance.now());
+    var ov=window.openVideo,cv=window.closeVideo;
+    window.openVideo=function(a,b){lenis.stop();ov(a,b);};
+    window.closeVideo=function(){cv();lenis.start();};
+    document.querySelectorAll('.cal,.vl-overlay').forEach(function(el){el.setAttribute('data-lenis-prevent','');});
+  }
+  // custom cursor, only for a real mouse or trackpad
+  if(calm||!matchMedia('(hover: hover) and (pointer: fine)').matches)return;
+  var dot=document.createElement('div'),ring=document.createElement('div');
+  dot.className='cur-dot';ring.className='cur-ring';ring.innerHTML='<i></i><b>Play</b>';
+  document.body.append(dot,ring);root.classList.add('cur-ready');
+  var x=-100,y=-100,rx=x,ry=y,st,lastY=scrollY;
+  addEventListener('pointermove',function(e){x=e.clientX;y=e.clientY;root.classList.add('cur-on');
+    var el=e.target.closest?e.target:null,p=el&&el.closest('.pc,.vid'),l=!p&&el&&el.closest('a,button,.dm-card,.vc,.strip-tile');
+    root.classList.toggle('cur-play',!!p);root.classList.toggle('cur-link',!!l);},{passive:true});
+  document.addEventListener('mouseout',function(e){if(!e.relatedTarget)root.classList.remove('cur-on');});
+  addEventListener('scroll',function(){var d=scrollY-lastY;lastY=scrollY;if(!d)return;
+    root.classList.add('cur-scroll');root.classList.toggle('cur-up',d<0);clearTimeout(st);
+    st=setTimeout(function(){root.classList.remove('cur-scroll','cur-up');},220);},{passive:true});
+  (function loop(){rx+=(x-rx)*.18;ry+=(y-ry)*.18;
+    dot.style.transform='translate3d('+x+'px,'+y+'px,0)';ring.style.transform='translate3d('+rx+'px,'+ry+'px,0)';
+    requestAnimationFrame(loop);})();
 })();
 </script>
 </body>
