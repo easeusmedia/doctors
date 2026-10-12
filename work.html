@@ -1165,6 +1165,17 @@ html.lenis,html.lenis body{height:auto;}
 }
 @media(min-width:821px){.cal-frame{height:570px;}}
 .brand{display:inline-flex;align-items:center;min-height:40px;}
+
+/* videos are composited on their own layer and can ignore a parent's rounded overflow while it animates;
+   a mask on each tile (plus a rounded video) forces the corners to clip in Chrome and Safari */
+.strip-tile,.rs-frame,.pc,.vc,.vid{isolation:isolate;-webkit-mask-image:-webkit-radial-gradient(white,black);mask-image:radial-gradient(#fff,#000);}
+.strip-vid{border-radius:inherit;transform:translateZ(0);}
+.reel-strip-wrap .strip-tile{border-radius:16px;}
+@media(max-width:640px){.reel-strip-wrap .strip-tile{border-radius:12px;}}
+.reel-strip-wrap .reel-strip{-webkit-mask:none;mask:none;}
+/* keep the tile's shadow: clip the video itself instead of masking the whole tile */
+.strip-tile,.rs-frame,.pc,.vc,.vid{-webkit-mask-image:none;mask-image:none;}
+.strip-vid{-webkit-mask-image:-webkit-radial-gradient(white,black);mask-image:radial-gradient(#fff,#000);border-radius:inherit;}
 </style>
 </head>
 <body>
