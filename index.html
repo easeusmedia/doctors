@@ -991,6 +991,27 @@ html.lenis,html.lenis body{height:auto;}
 .page{overflow-x:clip;}
 .ig-who b{white-space:nowrap;}
 @media(max-width:640px){.ig-who{font-size:.76rem;gap:6px;}.ig-av{width:24px;height:24px;}.ig-follow{font-size:.68rem;padding:2px 8px;}.ig-cap{font-size:.74rem;}.ig-bottom{left:12px;right:46px;bottom:18px;}}
+
+/* ---------- standalone centred reel section (performance-safe) ---------- */
+/* paint containment keeps its repaints from touching the rest of the page; overflow clips the halo */
+.reel-sec{position:relative;padding:40px 0 24px;overflow:hidden;contain:paint;}
+.reel-sec .phone-stage{position:relative;top:auto;display:flex;justify-content:center;padding:56px 0 64px;width:fit-content;margin:0 auto;}
+/* static soft gradient, no blur filter: nothing to recompute while scrolling */
+.reel-sec .phone-stage::before{width:240%;filter:none;background:radial-gradient(circle,rgba(0,170,255,.42) 0%,rgba(0,170,255,.3) 18%,rgba(0,170,255,.14) 34%,rgba(0,170,255,.05) 50%,transparent 64%);}
+.reel-sec .phone{width:300px;}
+.reel-sec .fc1{top:20%;left:-34%;}
+.reel-sec .fc2{left:auto;right:-36%;bottom:22%;}
+/* the floating chips and heart animate transform/opacity only; the bar runs on the compositor */
+.float-chip,.ig-side .heart,.ig-bar i{will-change:transform;}
+@media(max-width:640px){
+  .reel-sec{padding:16px 0 0;}
+  .reel-sec .phone-stage{padding:40px 0 48px;}
+  .reel-sec .phone{width:min(240px,66vw);}
+  .reel-sec .fc1{left:-14%;top:14%;}
+  .reel-sec .fc2{right:-14%;bottom:14%;}
+}
+@media(max-width:375px){.reel-sec .fc1{left:-8%;}.reel-sec .fc2{right:-8%;}}
+@media(max-width:640px){.reel-sec .phone-stage::before{width:175%;}}
 </style>
 </head>
 <body>
@@ -1093,8 +1114,7 @@ html.lenis,html.lenis body{height:auto;}
   </div>
 </section>
 
-<section class="sec on-light"><div class="wrap">
-  <div class="engine">
+<section class="reel-sec" aria-hidden="true"><div class="wrap">
   <div class="phone-stage" aria-hidden="true">
     <div class="phone">
       <div class="phone-screen">
@@ -1118,7 +1138,9 @@ html.lenis,html.lenis body{height:auto;}
     <span class="float-chip fc1">12 reels a month</span>
     <span class="float-chip fc2"><i></i>Runs on autopilot</span>
   </div>
-  <div class="engine-r">
+</div></section>
+
+<section class="sec on-light"><div class="wrap">
   <div class="head">
     <div><h2 class="h2">You record. <em>Everything else is ours.</em></h2></div>
   </div>
@@ -1131,8 +1153,6 @@ html.lenis,html.lenis body{height:auto;}
     <div class="cell"><div class="row-o">Give your front desk names to call</div><div class="row-d">New contacts handed to your team every two weeks.</div></div>
     <div class="cell"><div class="row-o">See what it brings in</div><div class="row-d">One page a month: reach, contacts and booking clicks.</div></div>
     <div class="cell part"><div class="row-o">Your part</div><div class="row-d">Record on your phone for 2 to 3 hours a month. That's all.</div></div>
-  </div>
-  </div>
   </div>
 
   <div class="inc">
