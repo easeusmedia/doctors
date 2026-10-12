@@ -711,6 +711,40 @@ html.lenis,html.lenis body{height:auto;}
 /* the Play cursor replaces the tile's own play button on mouse devices */
 .reel-play svg{transition:transform .3s,background .3s,opacity .3s;}
 .cur-ready .pc:hover .reel-play svg,.cur-ready .vid:hover .reel-play svg{opacity:0;transform:scale(.6);}
+
+/* ---------- cursor v2: monochrome, never covers text ---------- */
+/* white + difference blend: dark on light sections, white on dark ones, text underneath stays readable */
+.cur-dot,.cur-ring{mix-blend-mode:difference;}
+.cur-dot{width:6px;height:6px;margin:-3px 0 0 -3px;background:#fff;transition:opacity .3s,transform .2s;}
+.cur-ring{width:36px;height:36px;margin:-18px 0 0 -18px;}
+.cur-ring i{border:1.2px solid rgba(255,255,255,.85);background:transparent;transition:transform .45s cubic-bezier(.22,1,.36,1),border-radius .45s cubic-bezier(.22,1,.36,1),inset .45s cubic-bezier(.22,1,.36,1),background-color .3s,border-color .3s;}
+.cur-link .cur-ring i{transform:scale(1.5);background:transparent;border-color:#fff;}
+.cur-link .cur-dot{opacity:1;}
+.cur-press .cur-ring i{transform:scale(.8);}
+.cur-link.cur-press .cur-ring i{transform:scale(1.25);}
+/* over a video: our brand blue play bubble, normal blending */
+.cur-play .cur-ring{mix-blend-mode:normal;}
+.cur-play .cur-ring i{transform:scale(2.1);background:var(--blue);border-color:var(--blue);box-shadow:0 10px 30px -8px rgba(7,24,44,.6);}
+.cur-play .cur-ring b{font-size:.6rem;letter-spacing:.1em;}
+/* while scrolling: an outlined capsule with a direction arrow */
+.cur-scroll .cur-ring i{inset:-7px 7px;border-radius:20px;background:transparent;border-color:#fff;transform:none;}
+.cur-scroll .cur-ring i::after{border-color:#fff;}
+.cur-off .cur-dot,.cur-off .cur-ring{opacity:0!important;}
+
+/* reel cards lift on hover: give the row room so their top edge is never cut */
+.mq{padding:12px 0;margin-top:36px;}
+.mq-track{padding:0;}
+
+/* ---------- video pop-up: thin frame + cleaner close ---------- */
+.vl-overlay{background:rgba(5,15,29,.88);}
+.vl-wrap{border-radius:20px;box-shadow:0 0 0 1px rgba(255,255,255,.18),0 0 0 7px rgba(255,255,255,.035),0 50px 120px -30px rgba(0,0,0,.85);}
+.vl-wrap iframe{display:block;border-radius:20px;}
+.vl-close{top:-58px;right:0;width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.2);font-size:0;color:transparent;transition:background .3s,border-color .3s,transform .45s cubic-bezier(.22,1,.36,1);}
+.vl-close::before,.vl-close::after{content:'';position:absolute;left:50%;top:50%;width:15px;height:1.5px;border-radius:2px;background:#fff;transform:translate(-50%,-50%) rotate(45deg);}
+.vl-close::after{transform:translate(-50%,-50%) rotate(-45deg);}
+.vl-close:hover{background:var(--blue);border-color:var(--blue);transform:rotate(90deg);}
+.vl-close:focus-visible{outline:2px solid #fff;outline-offset:3px;}
+@media(max-width:640px){.vl-close{top:-54px;width:40px;height:40px;}}
 </style>
 </head>
 <body>
@@ -911,10 +945,14 @@ try{if((Intl.DateTimeFormat().resolvedOptions().timeZone||'').indexOf('America/'
     var el=e.target.closest?e.target:null,p=el&&el.closest('.pc,.vid'),l=!p&&el&&el.closest('a,button,.dm-card,.vc,.strip-tile');
     root.classList.toggle('cur-play',!!p);root.classList.toggle('cur-link',!!l);},{passive:true});
   document.addEventListener('mouseout',function(e){if(!e.relatedTarget)root.classList.remove('cur-on');});
+  // embedded frames (booking calendar, YouTube) draw their own cursor: hide ours over them
+  document.addEventListener('mouseover',function(e){root.classList.toggle('cur-off',e.target.tagName==='IFRAME');});
+  addEventListener('mousedown',function(){root.classList.add('cur-press');});
+  addEventListener('mouseup',function(){root.classList.remove('cur-press');});
   addEventListener('scroll',function(){var d=scrollY-lastY;lastY=scrollY;if(!d)return;
     root.classList.add('cur-scroll');root.classList.toggle('cur-up',d<0);clearTimeout(st);
     st=setTimeout(function(){root.classList.remove('cur-scroll','cur-up');},220);},{passive:true});
-  (function loop(){rx+=(x-rx)*.18;ry+=(y-ry)*.18;
+  (function loop(){rx+=(x-rx)*.16;ry+=(y-ry)*.16;
     dot.style.transform='translate3d('+x+'px,'+y+'px,0)';ring.style.transform='translate3d('+rx+'px,'+ry+'px,0)';
     requestAnimationFrame(loop);})();
 })();
