@@ -1145,6 +1145,19 @@ html.lenis,html.lenis body{height:auto;}
 .cal-frame .calendly-inline-widget iframe{width:100%;height:100%;border:0;}
 .cal-frame .calendly-spinner{display:none!important;}
 .cal-frame.ready .calendly-inline-widget{opacity:1;}
+
+/* ---------- booking calendar in our dark theme ---------- */
+.cal{background:#0c2441;border:1px solid rgba(255,255,255,.1);box-shadow:0 40px 80px -40px rgba(0,0,0,.7);}
+.cal-frame{background:#0c2441;height:600px;}
+.cal-skel i{background:linear-gradient(90deg,rgba(255,255,255,.06) 0%,rgba(255,255,255,.12) 50%,rgba(255,255,255,.06) 100%);background-size:200% 100%;}
+@media(max-width:640px){.cal-frame{height:700px;}}
+/* Calendly's colour options need a paid plan, so the frame stays white to match what Calendly draws */
+.cal{background:#fff;border:0;border-radius:20px;}
+.cal-frame{background:#fff;height:560px;}
+.cal-skel i{background:linear-gradient(90deg,#EEF1F5 0%,#F7F9FB 50%,#EEF1F5 100%);background-size:200% 100%;}
+@media(max-width:640px){.cal-frame{height:640px;}}
+/* data-resize lets Calendly set its own height; keep our box fixed so the layout never jumps */
+.cal-frame .calendly-inline-widget{height:100%!important;}
 </style>
 </head>
 <body>
@@ -1349,7 +1362,7 @@ html.lenis,html.lenis body{height:auto;}
     <ul class="fd-list"><li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.500l4.500 4.500L19 7.500" fill="none" stroke="currentColor" stroke-width="2.200" stroke-linecap="round" stroke-linejoin="round"/></svg><span>15 minutes, on video</span></li><li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.500l4.500 4.500L19 7.500" fill="none" stroke="currentColor" stroke-width="2.200" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Free, with no commitment</span></li><li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.500l4.500 4.500L19 7.500" fill="none" stroke="currentColor" stroke-width="2.200" stroke-linecap="round" stroke-linejoin="round"/></svg><span>If you join, you can leave after month one</span></li></ul>
     <div class="fd"><span class="av"></span><div><div class="fd-name">Ashmit Shahi</div><div class="fd-role">Founder · on the call with you</div></div></div>
   </div>
-  <div class="cal"><div class="cal-frame"><span class="cal-skel" aria-hidden="true"><i class="sk-h"></i><i class="sk-s"></i><span class="sk-grid"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span><i class="sk-b"></i></span><div class="calendly-inline-widget" data-url="https://calendly.com/ashmitshahi/easeus-media?hide_gdpr_banner=1&primary_color=1e5bb8"></div></div></div>
+  <div class="cal"><div class="cal-frame"><span class="cal-skel" aria-hidden="true"><i class="sk-h"></i><i class="sk-s"></i><span class="sk-grid"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span><i class="sk-b"></i></span><div class="calendly-inline-widget" data-resize="true" data-url="https://calendly.com/ashmitshahi/easeus-media?hide_event_type_details=1&hide_gdpr_banner=1&primary_color=1e5bb8"></div></div></div>
 </div></div></section>
 <div class="gap"></div>
 </div>
@@ -1460,14 +1473,20 @@ try{if((Intl.DateTimeFormat().resolvedOptions().timeZone||'').indexOf('America/'
   // fade the booking calendar in when Calendly reports it has rendered (fallback after 8s)
   var boxes=document.querySelectorAll('.cal-frame'); if(!boxes.length)return;
   function ready(){boxes.forEach(function(b){b.classList.add('ready');});}
-  // Calendly's script injects the iframe; reveal it shortly after the iframe finishes loading
+  // Calendly posts its content height (data-resize) only once the calendar has actually rendered
+  window.addEventListener('message',function(e){
+    if(e.origin!=='https://calendly.com'||!e.data)return;
+    var ev=e.data.event||'';
+    if(ev==='calendly.page_height'||ev==='calendly.event_type_viewed')setTimeout(ready,150);
+  });
+  // fallback: 2.5s after the iframe itself loads (never leave the placeholder up for long)
   boxes.forEach(function(b){
-    function hook(f){f.addEventListener('load',function(){setTimeout(function(){b.classList.add('ready');},1200);},{once:true});}
+    function hook(f){f.addEventListener('load',function(){setTimeout(ready,2500);},{once:true});}
     var f=b.querySelector('iframe'); if(f){hook(f);return;}
     var mo=new MutationObserver(function(){var f=b.querySelector('iframe');if(f){mo.disconnect();hook(f);}});
     mo.observe(b,{childList:true,subtree:true});
   });
-  setTimeout(ready,6000);
+  setTimeout(ready,9000);
 })();
 </script>
 <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js"></script>
