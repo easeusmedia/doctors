@@ -755,6 +755,8 @@ html.lenis,html.lenis body{height:auto;}
 .cur-link.cur-press .cur-lens i{transform:scale(1.25);}
 .cur-scroll .cur-lens i{inset:-7px 7px;border-radius:20px;transform:none;}
 .cur-play .cur-lens,.cur-off .cur-lens{opacity:0!important;}
+/* while scrolling the arrow capsule takes over: the dot always hides, fast, even over links */
+.cur-scroll .cur-dot{opacity:0!important;transition:opacity .12s;}
 </style>
 </head>
 <body>
