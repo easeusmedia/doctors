@@ -1116,6 +1116,11 @@ html.lenis,html.lenis body{height:auto;}
   -webkit-mask:linear-gradient(180deg,#000 44%,rgba(0,0,0,.5) 60%,rgba(0,0,0,.15) 71%,transparent 79%),linear-gradient(90deg,transparent 0,#000 16%,#000 84%,transparent 100%);-webkit-mask-composite:source-in;
   mask:linear-gradient(180deg,#000 44%,rgba(0,0,0,.5) 60%,rgba(0,0,0,.15) 71%,transparent 79%) intersect,linear-gradient(90deg,transparent 0,#000 16%,#000 84%,transparent 100%);}
 .reel-sec{overflow:visible;overflow-x:clip;contain:none;}
+/* phones: keep the reel demo cheap to paint (no animated GPU-heavy layers while scrolling) */
+@media(max-width:820px),(pointer:coarse){
+  .float-chip,.ig-side .heart,.ig-bar i{will-change:auto;}
+  .rs-vid{display:none;}
+}
 </style>
 </head>
 <body>
@@ -1404,7 +1409,8 @@ try{if((Intl.DateTimeFormat().resolvedOptions().timeZone||'').indexOf('America/'
   var sec=document.getElementById('reel-demo'); if(!sec)return;
   var stage=sec.querySelector('.rs-stage'),vid=sec.querySelector('.rs-vid'),src=vid&&vid.querySelector('source');
   var ua=navigator.userAgent, safari=/^((?!chrome|android|crios|fxios).)*safari/i.test(ua);
-  var canAlpha=vid&&!safari&&vid.canPlayType('video/webm; codecs="vp9"');
+  var desktop=matchMedia('(hover: hover) and (pointer: fine) and (min-width: 821px)').matches;
+  var canAlpha=vid&&desktop&&!safari&&vid.canPlayType('video/webm; codecs="vp9"');
   function go(){
     sec.classList.add('play');
     if(canAlpha&&src&&!src.src){src.src=src.dataset.src;vid.load();
@@ -1418,12 +1424,20 @@ try{if((Intl.DateTimeFormat().resolvedOptions().timeZone||'').indexOf('America/'
   if(canAlpha)new IntersectionObserver(function(es){es.forEach(function(e){if(!vid.src&&!src.src)return;e.isIntersecting?vid.play().catch(function(){}):vid.pause();});}).observe(sec);
 })();
 </script>
+<script>
+(function(){
+  var strip=document.querySelector('.reel-strip-wrap'); if(!strip||!('IntersectionObserver' in window))return;
+  var vids=[].slice.call(strip.querySelectorAll('video'));
+  new IntersectionObserver(function(es){es.forEach(function(e){vids.forEach(function(v){if(e.isIntersecting){v.play().catch(function(){});}else{v.pause();}});});},{rootMargin:'100px 0px'}).observe(strip);
+})();
+</script>
 <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js"></script>
 <script>
 (function(){
   var calm=matchMedia('(prefers-reduced-motion: reduce)').matches, root=document.documentElement;
   // silky scroll
-  if(!calm&&window.Lenis){
+  var fine=matchMedia('(hover: hover) and (pointer: fine)').matches;
+  if(!calm&&fine&&window.Lenis){
     root.style.scrollBehavior='auto';
     var lenis=new Lenis({lerp:.085,anchors:{offset:-84}});
     (function raf(t){lenis.raf(t);requestAnimationFrame(raf);})(performance.now());
