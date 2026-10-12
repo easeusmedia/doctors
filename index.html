@@ -745,6 +745,16 @@ html.lenis,html.lenis body{height:auto;}
 .vl-close:hover{background:var(--blue);border-color:var(--blue);transform:rotate(90deg);}
 .vl-close:focus-visible{outline:2px solid #fff;outline-offset:3px;}
 @media(max-width:640px){.vl-close{top:-54px;width:40px;height:40px;}}
+
+/* ---------- glass lens under the cursor ring ---------- */
+.cur-lens{position:fixed;top:0;left:0;z-index:199;width:36px;height:36px;margin:-18px 0 0 -18px;pointer-events:none;opacity:0;transition:opacity .3s;will-change:transform;}
+.cur-on .cur-lens{opacity:1;}
+.cur-lens i{position:absolute;inset:0;border-radius:50px;background:rgba(255,255,255,.07);backdrop-filter:blur(6px) saturate(1.6);-webkit-backdrop-filter:blur(6px) saturate(1.6);box-shadow:inset 0 1px 0 rgba(255,255,255,.18);transition:transform .45s cubic-bezier(.22,1,.36,1),border-radius .45s cubic-bezier(.22,1,.36,1),inset .45s cubic-bezier(.22,1,.36,1);}
+.cur-link .cur-lens i{transform:scale(1.5);}
+.cur-press .cur-lens i{transform:scale(.8);}
+.cur-link.cur-press .cur-lens i{transform:scale(1.25);}
+.cur-scroll .cur-lens i{inset:-7px 7px;border-radius:20px;transform:none;}
+.cur-play .cur-lens,.cur-off .cur-lens{opacity:0!important;}
 </style>
 </head>
 <body>
@@ -1020,9 +1030,9 @@ try{if((Intl.DateTimeFormat().resolvedOptions().timeZone||'').indexOf('America/'
   }
   // custom cursor, only for a real mouse or trackpad
   if(calm||!matchMedia('(hover: hover) and (pointer: fine)').matches)return;
-  var dot=document.createElement('div'),ring=document.createElement('div');
-  dot.className='cur-dot';ring.className='cur-ring';ring.innerHTML='<i></i><b>Play</b>';
-  document.body.append(dot,ring);root.classList.add('cur-ready');
+  var dot=document.createElement('div'),ring=document.createElement('div'),lens=document.createElement('div');
+  dot.className='cur-dot';ring.className='cur-ring';ring.innerHTML='<i></i><b>Play</b>';lens.className='cur-lens';lens.innerHTML='<i></i>';
+  document.body.append(lens,dot,ring);root.classList.add('cur-ready');
   var x=-100,y=-100,rx=x,ry=y,st,lastY=scrollY;
   addEventListener('pointermove',function(e){x=e.clientX;y=e.clientY;root.classList.add('cur-on');
     var el=e.target.closest?e.target:null,p=el&&el.closest('.pc,.vid'),l=!p&&el&&el.closest('a,button,.dm-card,.vc,.strip-tile');
@@ -1036,7 +1046,7 @@ try{if((Intl.DateTimeFormat().resolvedOptions().timeZone||'').indexOf('America/'
     root.classList.add('cur-scroll');root.classList.toggle('cur-up',d<0);clearTimeout(st);
     st=setTimeout(function(){root.classList.remove('cur-scroll','cur-up');},220);},{passive:true});
   (function loop(){rx+=(x-rx)*.16;ry+=(y-ry)*.16;
-    dot.style.transform='translate3d('+x+'px,'+y+'px,0)';ring.style.transform='translate3d('+rx+'px,'+ry+'px,0)';
+    dot.style.transform='translate3d('+x+'px,'+y+'px,0)';ring.style.transform=lens.style.transform='translate3d('+rx+'px,'+ry+'px,0)';
     requestAnimationFrame(loop);})();
 })();
 </script>
